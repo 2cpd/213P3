@@ -15,6 +15,14 @@
         android:id="@+id/nav_search"
         android:name="com.example.photos.ui.search.SearchFragment"
         android:label="@string/menu_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_nav_search_to_nav_results"
+            app:destination="@id/nav_results" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_results"
+        android:name="com.example.photos.ui.results.ResultsFragment"
+        android:label="@string/menu_results" />
 
 </navigation>

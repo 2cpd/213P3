@@ -26,30 +26,6 @@ public class ResultsFragment extends Fragment {
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //SPINNER SETUP
-        Spinner typeSpinner1 = (Spinner) root.findViewById(R.id.typeSpinner1);
-        Spinner typeSpinner2 = (Spinner) root.findViewById(R.id.typeSpinner2);
-        Spinner conjSpinner = (Spinner) root.findViewById(R.id.conjSpinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout.
-        ArrayAdapter<CharSequence> tagAdapter = ArrayAdapter.createFromResource(
-                this.getActivity(),
-                R.array.tagChoiceArray,
-                android.R.layout.simple_spinner_item
-        );
-        // Specify the layout to use when the list of choices appears.
-        tagAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner.
-        typeSpinner1.setAdapter(tagAdapter);
-        typeSpinner2.setAdapter(tagAdapter);
-
-        ArrayAdapter<CharSequence> conjAdapter = ArrayAdapter.createFromResource(
-                this.getActivity(),
-                R.array.conjunctionChoiceArray,
-                android.R.layout.simple_spinner_item
-        );
-        conjAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        conjSpinner.setAdapter(conjAdapter);
-
         //final TextView textView = binding.textSearch;
         //searchViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
@@ -61,14 +37,4 @@ public class ResultsFragment extends Fragment {
         binding = null;
     }
 
-    public void search() {
-        //TODO: get content of tag1, tag2, tag1type, tag2type, conjunction
-        String tag1;
-        //if tag1 empty: error!
-        //else (tag1 !empty):
-            //if tag2 empty: ignore tag2 & conjunction, search for tag1
-            //else: (tag2 !empty)
-                //if and: search for tag1 && tag2
-                //else (or): search for tag1 || tag2
-    }
 }

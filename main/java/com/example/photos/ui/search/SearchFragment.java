@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.photos.R;
 import com.example.photos.databinding.FragmentSearchBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 public class SearchFragment extends Fragment {
 
@@ -51,6 +53,25 @@ public class SearchFragment extends Fragment {
         conjAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         conjSpinner.setAdapter(conjAdapter);
 
+        //SEARCH BUTTON SETUP
+        Button searchButton = (Button) root.findViewById(R.id.searchButton);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        //.setAction("Action", null).show();
+
+                //TODO: get content of tag1, tag2, tag1type, tag2type, conjunction
+                String tag1;
+                //if tag1 empty: error!
+                //else (tag1 !empty):
+                //if tag2 empty: ignore tag2 & conjunction, search for tag1
+                //else: (tag2 !empty)
+                //if and: search for tag1 && tag2
+                //else (or): search for tag1 || tag2
+            }
+        });
+
         //final TextView textView = binding.textSearch;
         //searchViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
@@ -60,16 +81,5 @@ public class SearchFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    public void search() {
-        //TODO: get content of tag1, tag2, tag1type, tag2type, conjunction
-        String tag1;
-        //if tag1 empty: error!
-        //else (tag1 !empty):
-            //if tag2 empty: ignore tag2 & conjunction, search for tag1
-            //else: (tag2 !empty)
-                //if and: search for tag1 && tag2
-                //else (or): search for tag1 || tag2
     }
 }

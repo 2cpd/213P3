@@ -14,16 +14,25 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.photos.R;
 
 import com.example.photos.databinding.FragmentHomeBinding;
+import com.example.photos.ui.home.HomeViewModel;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
-public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class HomeFragment extends Fragment{
     private ArrayList<String> items;
     private ArrayAdapter<String> itemsAdapter;
     private ListView listView;
@@ -31,7 +40,11 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private FragmentHomeBinding binding;
 
-    @Override
+    private static final String FILE_NAME = "albumslist.txt";
+    String albumName;
+    //String[] temp = {"example", "testing"};
+
+    /*@Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //view.findViewById(R.id.listView).setOnClickListener(this);
@@ -42,7 +55,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(this);
 
-    }
+    }*/
 
     /*@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,8 +79,9 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Context context = getParentFragment().getContext();
+                Context context = getContext();
                 Toast.makeText(context, "Album Removed", Toast.LENGTH_LONG).show();
+                albumName = items.get(position);
                 items.remove(position);
                 itemsAdapter.notifyDataSetChanged();
 
@@ -77,48 +91,98 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
     private void addItem(View view) {
-        EditText inputName = getView().findViewById(R.id.editTextText);
+        EditText inputName = view.findViewById(R.id.editTextText);
         String itemText = inputName.getText().toString();
 
         if (!(itemText.equals(""))) {
             itemsAdapter.add(itemText);
+            save(view);
             inputName.setText("");
         } else {
-            Toast.makeText(getParentFragment().getActivity(), "Enter the name please", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Name entry cannot be empty", Toast.LENGTH_LONG).show();
         }
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        HomeViewModel AlbumViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-        //View view = inflater.inflate(R.layout.fragment_album, container, false);
+                             Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        listView = (ListView) view.findViewById(R.id.listView);
+        button =view.findViewById(R.id.button);
+        load(view);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        /*listView = (ListView)getView().findViewById(R.id.listView);
-        button = (Button)getView().findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick (View viewone) {
                 addItem(view);
             }
         });
 
         items = new ArrayList<>();
-        itemsAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(itemsAdapter);
-        setUpListViewListener();*/
+        itemsAdapter =  new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, items);
 
-        //final TextView textView = binding.editTextText;
-        //AlbumViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        listView.setAdapter(itemsAdapter);
+
+        setUpListViewListener();
+        return view;
     }
 
-    @Override
+    public void save(View view) {
+        albumName = view.findViewById(R.id.editTextText).toString();
+        FileOutputStream fos = null;
+        try {
+            fos = getContext().openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
+            fos.write(albumName.getBytes());
+            albumName = "";
+            Toast.makeText(view.getContext(), "Saved To" + getContext().getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void load(View view) {
+        FileInputStream fis = null;
+
+        try {
+            fis = getContext().openFileInput(FILE_NAME);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder builder = new StringBuilder();
+            String text;
+
+            while ((text = br.readLine()) != null) {
+                builder.append(text).append("\n");
+            }
+
+            albumName = builder.toString();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /*@Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (position == 0) {
             Toast.makeText(getActivity(), "example", Toast.LENGTH_SHORT).show();
@@ -127,5 +191,5 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         if (position == 1) {
             Toast.makeText(getActivity(), "testing", Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 }
