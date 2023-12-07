@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.example.photos.R;
 
 import com.example.photos.databinding.FragmentHomeBinding;
 import com.example.photos.ui.home.HomeViewModel;
+import com.example.photos.ui.search.SearchFragment;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -37,6 +39,7 @@ public class HomeFragment extends Fragment{
     private ArrayAdapter<String> itemsAdapter;
     private ListView listView;
     private Button button;
+    /*ADDED*/private Button temp_toPhotosButton;
 
     private FragmentHomeBinding binding;
 
@@ -109,13 +112,21 @@ public class HomeFragment extends Fragment{
                              Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         listView = (ListView) view.findViewById(R.id.listView);
-        button =view.findViewById(R.id.button);
+        button = view.findViewById(R.id.button);
+        /*ADDED*/temp_toPhotosButton = view.findViewById(R.id.toPhotosButton);
         load(view);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View viewone) {
                 addItem(view);
+            }
+        });
+
+        temp_toPhotosButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View viewone) {
+                NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.action_nav_home_to_nav_photos);
             }
         });
 
@@ -128,6 +139,44 @@ public class HomeFragment extends Fragment{
         return view;
     }
 
+    //json
+    private String read(Context context, String fileName) {
+        try {
+            FileInputStream fis = context.openFileInput(fileName);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+            return sb.toString();
+        } catch (FileNotFoundException fileNotFound) {
+            return null;
+        } catch (IOException ioException) {
+            return null;
+        }
+    }
+
+    private boolean create(Context context, String fileName, String jsonString){
+        String filename = "storage.json";
+        try {
+            FileOutputStream fos = context.openFileOutput(fileName,Context.MODE_PRIVATE);
+            if (jsonString != null) {
+                fos.write(jsonString.getBytes());
+            }
+            fos.close();
+            return true;
+        } catch (FileNotFoundException fileNotFound) {
+            return false;
+        } catch (IOException ioException) {
+            return false;
+        }
+
+    }
+    //
+
+    //txt
     public void save(View view) {
         albumName = view.findViewById(R.id.editTextText).toString();
         FileOutputStream fos = null;
@@ -181,6 +230,7 @@ public class HomeFragment extends Fragment{
             }
         }
     }
+    //
 
     /*@Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
