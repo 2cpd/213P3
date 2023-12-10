@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -27,6 +28,10 @@ import java.util.Objects;
 public class SearchFragment extends Fragment {
 
     private FragmentSearchBinding binding;
+
+    private static final String[] autoCompleteTestArr = new String[] {
+            "Liberty", "Leonida", "San Andreas", "North Yankton"
+    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -65,8 +70,8 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextInputEditText tag1input = (TextInputEditText) root.findViewById(R.id.tagInputEntry1);
-                TextInputEditText tag2input = (TextInputEditText) root.findViewById(R.id.tagInputEntry2);
+                AutoCompleteTextView tag1input = (AutoCompleteTextView) root.findViewById(R.id.tagInputEntry1);
+                AutoCompleteTextView tag2input = (AutoCompleteTextView) root.findViewById(R.id.tagInputEntry2);
                 Spinner tag1typeChoice = (Spinner) root.findViewById(R.id.typeSpinner1);
                 Spinner tag2typeChoice = (Spinner) root.findViewById(R.id.typeSpinner2);
                 Spinner conjunctionChoice = (Spinner) root.findViewById(R.id.conjSpinner);
@@ -145,11 +150,7 @@ public class SearchFragment extends Fragment {
 
         ResultsFragment newResultsFragment = new ResultsFragment();
         Bundle args = new Bundle();
-        args.putString("tag1",tag1);
-        args.putString("tag2",tag1);
-        args.putString("tag1type",tag1type);
-        args.putString("tag2type",tag2type);
-        args.putString("conjunction",conjunction);
+        args.putString("test",tag1);
         newResultsFragment.setArguments(args);
 
         // Replace the SearchFragment with the ResultsFragment

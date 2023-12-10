@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -29,6 +30,14 @@ public class ResultsFragment extends Fragment {
 
         binding = FragmentResultsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        Bundle args = getArguments();
+        if (args != null && args.containsKey("test")) {
+            String myString = args.getString("test");
+            System.out.println(myString);
+            TextView testTextView = (TextView) root.findViewById(R.id.testTextView);
+            testTextView.setText(myString);
+        }
 
         Button temp_toSlideshowButton = root.findViewById(R.id.tempToSlideshow);
         temp_toSlideshowButton.setOnClickListener(new View.OnClickListener() {
