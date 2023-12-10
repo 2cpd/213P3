@@ -1,5 +1,6 @@
 package com.example.photos.ui.search;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,7 +18,11 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.photos.R;
 import com.example.photos.databinding.FragmentSearchBinding;
+import com.example.photos.model.Photo;
 import com.example.photos.ui.results.ResultsFragment;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.Objects;
 
 public class SearchFragment extends Fragment {
 
@@ -59,7 +65,19 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                performSearch();
+                TextInputEditText tag1input = (TextInputEditText) root.findViewById(R.id.tagInputEntry1);
+                TextInputEditText tag2input = (TextInputEditText) root.findViewById(R.id.tagInputEntry2);
+                Spinner tag1typeChoice = (Spinner) root.findViewById(R.id.typeSpinner1);
+                Spinner tag2typeChoice = (Spinner) root.findViewById(R.id.typeSpinner2);
+                Spinner conjunctionChoice = (Spinner) root.findViewById(R.id.conjSpinner);
+
+                String tag1 = tag1input.getText().toString();
+                String tag2 = tag2input.getText().toString();
+                String tag1type = tag1typeChoice.getSelectedItem().toString();
+                String tag2type = tag2typeChoice.getSelectedItem().toString();
+                String conjunction = conjunctionChoice.getSelectedItem().toString();
+
+                performSearch(tag1,tag2,tag1type,tag2type,conjunction);
             }
         });
 
@@ -74,15 +92,65 @@ public class SearchFragment extends Fragment {
         binding = null;
     }
 
-    public void performSearch() {
-        //TODO: get content of tag1, tag2, tag1type, tag2type, conjunction
-        String tag1;
-        //if tag1 empty: error!
-        //else (tag1 !empty):
-        //if tag2 empty: ignore tag2 & conjunction, search for tag1
-        //else: (tag2 !empty)
-        //if and: search for tag1 && tag2
-        //else (or): search for tag1 || tag2
+    //may change type from void to ArrayList<Photo>
+    public void performSearch(String tag1, String tag2, String tag1type, String tag2type, String conjunction) {
+        if (tag1.equals("")) { //if tag1 is empty
+            Context context = getContext();
+            Toast.makeText(context, "Tag 1 Entry cannot be empty", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        /*if (tag2.equals("")) { //if tag2 is empty, then only do search on tag1
+            for (Photo i:allPhotos) {
+                if (tag1type.equals("Location") && i.getLocation().equalsIgnoreCase(tag1)) {
+                        //add photo to search results (arraylist?)
+                    }
+                    else if (tag1type.equals("Person") && i.containsPerson(tag1)) {
+                        //add photo to search results
+                    }
+            }
+        }//*/
+
+        /*else { //tag2 is not empty
+            for (Photo i:allPhotos) {
+                boolean tag1match = false, tag2match = false;
+                if (tag1type.equals("Location") && i.getLocation().equalsIgnoreCase(tag1)) { //tag1 location match
+                    tag1match = true;
+                    if (tag2type.equals("Location") && i.getLocation().equalsIgnoreCase(tag2)) {
+                        tag2match = true;
+                    }
+                    else if (tag2type.equals("Person") && i.containsPerson(tag2)) {
+                        tag2match = true;
+                    }
+                }
+                else if (tag1type.equals("Person") && i.containsPerson(tag1)) { //tag1 person match
+                    if (i.containsPerson(tag1)) {
+                        tag1match = true;
+                        if (tag2type.equals("Location") && i.getLocation().equalsIgnoreCase(tag2)) {
+                            tag2match = true;
+                        }
+                        else if (tag2type.equals("Person") && i.containsPerson(tag2)) {
+                            tag2match = true;
+                        }
+                    }
+                }
+                if (conjunction.equals("And") && (tag1match && tag2match)) {
+                    //add photo
+                }
+                else if (conjunction.equals("Or") && (tag1match || tag2match)) { //"Or"
+                    //add photo
+                }
+            }
+        }//*/
+
+        ResultsFragment newResultsFragment = new ResultsFragment();
+        Bundle args = new Bundle();
+        args.putString("tag1",tag1);
+        args.putString("tag2",tag1);
+        args.putString("tag1type",tag1type);
+        args.putString("tag2type",tag2type);
+        args.putString("conjunction",conjunction);
+        newResultsFragment.setArguments(args);
 
         // Replace the SearchFragment with the ResultsFragment
         NavHostFragment.findNavController(SearchFragment.this).navigate(R.id.action_nav_search_to_nav_results);
