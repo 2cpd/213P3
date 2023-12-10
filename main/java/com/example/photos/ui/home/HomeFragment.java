@@ -3,6 +3,7 @@ package com.example.photos.ui.home;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,6 +22,8 @@ import com.example.photos.R;
 
 import com.example.photos.databinding.FragmentHomeBinding;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.example.photos.shared.SharedViewModel;
 import com.example.photos.ui.home.HomeViewModel;
 import com.example.photos.ui.search.SearchFragment;
 
@@ -39,6 +42,7 @@ import com.example.photos.model.Home;
 
 
 public class HomeFragment extends Fragment{
+    private SharedViewModel sharedViewModel;
     public ArrayList<Album> albumsarraylist = new ArrayList<Album>();
     public Home defaulthome = new Home("user");
     private ArrayList<String> items;
@@ -57,6 +61,58 @@ public class HomeFragment extends Fragment{
     EditText newAlbumName;
 
 
+
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        listView = (ListView) view.findViewById(R.id.listView);
+        button = view.findViewById(R.id.button);
+        button_rename = view.findViewById(R.id.button_rename);
+        mEditText = view.findViewById(R.id.editTextText);
+        newAlbumName = view.findViewById(R.id.editTextText2);
+        temp_toPhotosButton = view.findViewById(R.id.toPhotosButton);
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View viewone) {
+                addItem(view);
+            }
+        });
+
+
+        button_rename.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick (View viewone) {
+
+                setButton_rename(view);
+            }
+        });
+
+        temp_toPhotosButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View viewone) {
+                NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.action_nav_home_to_nav_photos);
+            }
+        });
+
+        items = load(view);
+        itemsAdapter =  new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, items);
+
+        listView.setAdapter(itemsAdapter);
+
+        setUpListViewListener();
+        return view;
+    }
 
     private void setUpListViewListener() {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -244,50 +300,6 @@ public class HomeFragment extends Fragment{
             Toast.makeText(getActivity(), "Name entry cannot be empty", Toast.LENGTH_LONG).show();
         }
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        listView = (ListView) view.findViewById(R.id.listView);
-        button = view.findViewById(R.id.button);
-        button_rename = view.findViewById(R.id.button_rename);
-        mEditText = view.findViewById(R.id.editTextText);
-        newAlbumName = view.findViewById(R.id.editTextText2);
-        temp_toPhotosButton = view.findViewById(R.id.toPhotosButton);
-
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View viewone) {
-                addItem(view);
-            }
-        });
-
-
-        button_rename.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View viewone) {
-
-                setButton_rename(view);
-            }
-        });
-
-        temp_toPhotosButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View viewone) {
-                NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.action_nav_home_to_nav_photos);
-            }
-        });
-
-        items = load(view);
-        itemsAdapter =  new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, items);
-
-        listView.setAdapter(itemsAdapter);
-
-        setUpListViewListener();
-        return view;
     }
 
     public void save(View view) {

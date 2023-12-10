@@ -10,17 +10,27 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.photos.R;
 import com.example.photos.databinding.FragmentSlideshowBinding;
+import com.example.photos.shared.SharedViewModel;
 import com.example.photos.ui.results.ResultsViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class SlideshowFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;
+
+    private SharedViewModel sharedViewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,11 +53,24 @@ public class SlideshowFragment extends Fragment {
         //@tools:sample/backgrounds/scenic[0]
 
         ImageView displayedImage = (ImageView) root.findViewById(R.id.imageSlideshow);
-        displayedImage.setImageResource(R.drawable.ic_menu_gallery);
+        displayedImage.setImageResource(R.drawable.ic_menu_gallery); //test image; TO BE DELETED
         //displayedImage.setImageURI();
 
         Button prevButton = (Button) root.findViewById(R.id.prevPhotoButton);
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toPrevPhoto();
+            }
+        });
+
         Button nextButton = (Button) root.findViewById(R.id.nextPhotoButton);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toNextPhoto();
+            }
+        });
 
         Button addTagButton = (Button) root.findViewById(R.id.addTagButton);
         addTagButton.setOnClickListener(new View.OnClickListener() {
@@ -74,11 +97,11 @@ public class SlideshowFragment extends Fragment {
     }
 
     public void toNextPhoto() {
-
+        //TODO: Fill in method
     }
 
     public void toPrevPhoto() {
-
+        //TODO: Fill in method
     }
 
     public void addTag(String name, String type) {
@@ -88,6 +111,7 @@ public class SlideshowFragment extends Fragment {
         }
         if (type.equals("Location")) {
             //thisPhoto.setLocation(name);
+            //TODO: implement way to determine properties of this photo
         }
         else { //person
             //thisPhoto.addPerson(name);
