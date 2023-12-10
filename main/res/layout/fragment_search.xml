@@ -9,23 +9,25 @@
 
     <AutoCompleteTextView
         android:id="@+id/tagInputEntry1"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="29dp"
-        android:text="AutoCompleteTextView"
+        android:layout_marginEnd="16dp"
+        android:hint="Tag 1"
         app:layout_constraintEnd_toStartOf="@+id/typeSpinner1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <AutoCompleteTextView
         android:id="@+id/tagInputEntry2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="AutoCompleteTextView"
+        android:layout_marginEnd="16dp"
+        android:hint="Tag 2 (optional)"
+        app:layout_constraintEnd_toStartOf="@+id/typeSpinner2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tagInputEntry1" />
 

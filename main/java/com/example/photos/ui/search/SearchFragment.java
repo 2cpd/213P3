@@ -30,7 +30,8 @@ public class SearchFragment extends Fragment {
     private FragmentSearchBinding binding;
 
     private static final String[] autoCompleteTestArr = new String[] {
-            "Liberty", "Leonida", "San Andreas", "North Yankton"
+            "Alabama", "Alaska", "Arizona", "Arkansas", //US states starting with A
+            "Alderney", "Liberty", "Leonida", "San Andreas", "North Yankton" //Fictional states in the GTA series
     };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -45,7 +46,7 @@ public class SearchFragment extends Fragment {
         Spinner typeSpinner1 = (Spinner) root.findViewById(R.id.typeSpinner1);
         Spinner typeSpinner2 = (Spinner) root.findViewById(R.id.typeSpinner2);
         Spinner conjSpinner = (Spinner) root.findViewById(R.id.conjSpinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout.
+        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> tagAdapter = ArrayAdapter.createFromResource(
                 this.getActivity(),
                 R.array.tagChoiceArray,
@@ -65,13 +66,17 @@ public class SearchFragment extends Fragment {
         conjAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         conjSpinner.setAdapter(conjAdapter);
 
+        //TEXT INPUT SETUP
+        AutoCompleteTextView tag1input = (AutoCompleteTextView) root.findViewById(R.id.tagInputEntry1);
+        AutoCompleteTextView tag2input = (AutoCompleteTextView) root.findViewById(R.id.tagInputEntry2);
+        ArrayAdapter<String> autoInputAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, autoCompleteTestArr);
+        tag1input.setAdapter(autoInputAdapter); tag2input.setAdapter(autoInputAdapter);
+
         //SEARCH BUTTON SETUP
         Button searchButton = (Button) root.findViewById(R.id.searchButton);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AutoCompleteTextView tag1input = (AutoCompleteTextView) root.findViewById(R.id.tagInputEntry1);
-                AutoCompleteTextView tag2input = (AutoCompleteTextView) root.findViewById(R.id.tagInputEntry2);
                 Spinner tag1typeChoice = (Spinner) root.findViewById(R.id.typeSpinner1);
                 Spinner tag2typeChoice = (Spinner) root.findViewById(R.id.typeSpinner2);
                 Spinner conjunctionChoice = (Spinner) root.findViewById(R.id.conjSpinner);
