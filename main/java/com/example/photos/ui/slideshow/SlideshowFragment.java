@@ -111,7 +111,7 @@ public class SlideshowFragment extends Fragment {
         }
         if (type.equals("Location")) {
             //thisPhoto.setLocation(name);
-            //TODO: implement way to determine properties of this photo
+            //TODO: blah blah
         }
         else { //person
             //thisPhoto.addPerson(name);

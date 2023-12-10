@@ -102,10 +102,12 @@ public class SearchFragment extends Fragment {
 
                 ArrayList<Photo> searchResults = performSearch(tag1,tag2,tag1type,tag2type,conjunction);
 
-                SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-                sharedViewModel.setSearchResults(searchResults);
+                if (searchResults != null) {
+                    SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+                    sharedViewModel.setSearchResults(searchResults);
 
-                NavHostFragment.findNavController(SearchFragment.this).navigate(R.id.action_nav_search_to_nav_results);
+                    NavHostFragment.findNavController(SearchFragment.this).navigate(R.id.action_nav_search_to_nav_results);
+                }
             }
         });
 
@@ -129,8 +131,8 @@ public class SearchFragment extends Fragment {
             return null;
         }
 
-        /*if (tag2.equals("")) { //if tag2 is empty, then only do search on tag1
-            for (Photo i:allPhotos) {
+        if (tag2.equals("")) { //if tag2 is empty, then only do search on tag1
+            for (Photo i:sharedViewModel.getAllPhotosList()) {
                 if (tag1type.equals("Location") && i.getLocation().equalsIgnoreCase(tag1)) {
                         searchArrayList.add(i);
                     }
@@ -138,10 +140,10 @@ public class SearchFragment extends Fragment {
                         searchArrayList.add(i);
                     }
             }
-        }//*/
+        }
 
-        /*else { //tag2 is not empty
-            for (Photo i:allPhotos) {
+        else { //tag2 is not empty
+            for (Photo i:sharedViewModel.getAllPhotosList()) {
                 boolean tag1match = false, tag2match = false;
                 if (tag1type.equals("Location") && i.getLocation().equalsIgnoreCase(tag1)) { //tag1 location match
                     tag1match = true;
@@ -170,7 +172,7 @@ public class SearchFragment extends Fragment {
                     searchArrayList.add(i);
                 }
             }
-        }//*/
+        }
 
         return searchArrayList;
     }
