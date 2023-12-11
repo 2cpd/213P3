@@ -61,6 +61,14 @@ public class SlideshowFragment extends Fragment {
         displayedImage.setImageResource(R.drawable.ic_menu_gallery); //test image; TO BE DELETED
         //displayedImage.setImageURI();
 
+        Button moveButton = (Button) root.findViewById(R.id.moveButton);
+        moveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toPrevPhoto();
+            }
+        });
+
         Button prevButton = (Button) root.findViewById(R.id.prevPhotoButton);
         prevButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,22 +128,4 @@ public class SlideshowFragment extends Fragment {
     public void toPrevPhoto() {
         //TODO: Fill in method
     }
-
-        //{URI:pathToImageFile,Location:place,People:[person1,person2],Album:albumName}{URI:pathToImageFile2,Location:place2,People:[person3,person4],Album:albumName2}
-        public void writeNewLocationToFile(String file, String path, String newLocation) {
-            // Pattern to find the photo data with the specified URI path
-            // The regex now accounts for an empty Location field
-            String regex = "\\{URI:" + Pattern.quote(path) + ",Location:([^,]*),People:\\[([^\\]]*)\\],Album:([^\\}]+)\\}";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(file);
-
-            // Check if the pattern is found
-            if (matcher.find()) {
-                // Replace the old location (which may be empty) with the new location
-                String updatedSegment = matcher.group(0).replaceFirst("Location:[^,]*", "Location:" + newLocation);
-
-                // Replace the old segment with the updated segment in the original data
-                file.replace(matcher.group(0), updatedSegment);
-            }
-        }
 }

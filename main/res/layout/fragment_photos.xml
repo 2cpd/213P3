@@ -48,7 +48,7 @@
             android:text="TextView" />
 
         <ListView
-            android:id="@+id/listView"
+            android:id="@+id/homeListView"
             android:layout_width="match_parent"
             android:layout_height="578dp" />
     </LinearLayout>

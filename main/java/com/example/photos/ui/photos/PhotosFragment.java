@@ -78,6 +78,7 @@ public class PhotosFragment extends Fragment {
         super.onActivityResult(requestCode,resultCode,data);
         if(resultCode == RESULT_OK && data != null) {
             selectedImage = data.getData();
+            sharedViewModel.addPhotoToAllPhotosList("", ""); //TODO:REPLACE ""
         }
     }
 
@@ -85,12 +86,5 @@ public class PhotosFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    public void saveNewPhotoData(String newURI) { //new URI needs to be defined as path to photo
-        //{URI:pathToImageFile,Location:place,People:[person1,person2],Album:albumName}
-        albumName = sharedViewModel.getSelectedAlbumName();
-        String tempStringToWrite = "{URI:" + newURI + ",Location:,People:[],Album:" + albumName;
-        //TODO:Write the tempString to file
     }
 }

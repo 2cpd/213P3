@@ -54,15 +54,19 @@ public class SharedViewModel extends ViewModel {
     private ArrayList<Photo> searchResults = new ArrayList<>();
 
     // Methods to load data from text files
-    /*public void loadData() {
-        // TODO:Load data from text files and populate the ArrayLists
-        // tags = ...
-        // allPhotos = ...
-        // allAlbums = ...
+    public void loadAllPhotosListFromFile() {
+        // TODO:Load data from text file and populate the ArrayList
     }
-    public void saveData() {
-        // TODO:Save data from arraylists to text files
-    }*/
+    public void saveAllPhotosListToFile() {
+        // TODO:Save data from arraylist to text file
+    }
+
+    public void loadAllTagsListFromFile() {
+        // TODO:Load data from text file and populate the ArrayList
+    }
+    public void saveAllTagsListToFile() {
+        // TODO:Save data from arraylist to text file
+    }
 
     public void setSelectedAlbumName(String name) {
         selectedAlbumName = name;

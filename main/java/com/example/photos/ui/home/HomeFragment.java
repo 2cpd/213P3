@@ -18,8 +18,6 @@ import android.widget.Toast;
 
 import com.example.photos.R;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -33,7 +31,6 @@ import com.example.photos.databinding.FragmentHomeBinding;
 import com.example.photos.model.Album;
 import com.example.photos.model.Home;
 import com.example.photos.shared.SharedViewModel;
-import com.example.photos.ui.photos.PhotosFragment;
 
 
 public class HomeFragment extends Fragment{
@@ -66,7 +63,7 @@ public class HomeFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        listView = (ListView) view.findViewById(R.id.listView);
+        listView = (ListView) view.findViewById(R.id.homeListView);
         button = view.findViewById(R.id.addPhotoButton);
         button_rename = view.findViewById(R.id.button_rename);
         mEditText = view.findViewById(R.id.editTextText);
