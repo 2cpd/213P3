@@ -1,9 +1,18 @@
 package com.example.photos.shared;
 
+import android.text.TextUtils;
 import android.util.Pair;
+import android.content.Context;
 import androidx.lifecycle.ViewModel;
 import com.example.photos.model.Photo;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SharedViewModel extends ViewModel {
 
@@ -13,6 +22,7 @@ public class SharedViewModel extends ViewModel {
     -stored in the form of pair [tagName, tagType], where tagType can be either Location/Person
     -when a new tag is added, attempt to save the new tag in the arraylist
             -look for repeats: don't add if this tag already exists (use equalsIgnoreCase())
+    -format: [tag1,type1][tag2,type2]
 
     arraylist containing all photos
     -used for Results
@@ -26,14 +36,17 @@ public class SharedViewModel extends ViewModel {
         -create a temporary arraylist to store matching photos
         -show in listView once search is complete
     -(photo repeats are permitted if in different albums)
+    -format: {URI:pathToImageFile,Location:place,People:[person1,person2],Album:albumName}
 
     arraylist of albums
     -used for Home
     -includes names of albums
+    -format: album1,album2
 
     temp arraylist for search
-
      */
+
+    private String selectedAlbumName;
 
     private ArrayList<Pair<String,String>> allTagsList = new ArrayList<>(); //stores all tags, for autocomplete
     private ArrayList<Photo> allPhotosList = new ArrayList<>();
@@ -41,15 +54,21 @@ public class SharedViewModel extends ViewModel {
     private ArrayList<Photo> searchResults = new ArrayList<>();
 
     // Methods to load data from text files
-    public void loadData() {
+    /*public void loadData() {
         // TODO:Load data from text files and populate the ArrayLists
         // tags = ...
         // allPhotos = ...
         // allAlbums = ...
     }
-
     public void saveData() {
         // TODO:Save data from arraylists to text files
+    }*/
+
+    public void setSelectedAlbumName(String name) {
+        selectedAlbumName = name;
+    }
+    public String getSelectedAlbumName() {
+        return selectedAlbumName;
     }
 
     public ArrayList<Pair<String,String>> getAllTagsList() {
@@ -83,7 +102,8 @@ public class SharedViewModel extends ViewModel {
         return true;
     }
 
-    public ArrayList<String> getAllAlbumsList() {
+    //Made redundant
+    /*public ArrayList<String> getAllAlbumsList() {
         return allAlbumsList;
     }
 
@@ -96,7 +116,7 @@ public class SharedViewModel extends ViewModel {
         //album does not exist, add album to list
         allAlbumsList.add(newAlbumName);
         return true;
-    }
+    }*/
 
     public void setSearchResults(ArrayList<Photo> photos) {
         this.searchResults = photos;

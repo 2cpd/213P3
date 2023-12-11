@@ -1,5 +1,6 @@
 package com.example.photos;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-        sharedViewModel.loadData();
+        //sharedViewModel.loadData();
 
         setSupportActionBar(binding.appBarMain.toolbar);
         /*binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
@@ -67,5 +68,9 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void createEmptyFile(Context context, String filename) {
+
     }
 }

@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment{
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View viewone) {
+            public void onClick (View root) {
                 addItem(view);
             }
         });
@@ -92,7 +92,7 @@ public class HomeFragment extends Fragment{
 
         button_rename.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick (View viewone) {
+            public void onClick (View root) {
 
                 setButton_rename(view);
             }
@@ -100,7 +100,7 @@ public class HomeFragment extends Fragment{
 
         temp_toPhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View viewone) {
+            public void onClick (View root) {
                 NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.action_nav_home_to_nav_photos);
             }
         });

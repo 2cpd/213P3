@@ -3,8 +3,8 @@ package com.example.photos.ui.home;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,28 +14,26 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.photos.R;
 
-import com.example.photos.databinding.FragmentHomeBinding;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-import com.example.photos.ui.home.HomeViewModel;
-import com.example.photos.ui.search.SearchFragment;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import com.example.photos.databinding.FragmentHomeBinding;
 import com.example.photos.model.Album;
 import com.example.photos.model.Home;
+import com.example.photos.shared.SharedViewModel;
+import com.example.photos.ui.photos.PhotosFragment;
 
 
 public class HomeFragment extends Fragment{
@@ -52,13 +50,65 @@ public class HomeFragment extends Fragment{
 
     private static final String FILE_NAME = "albumslist.txt";
     private static final String TEMP_NAME = "tempalbums.txt";
-    String albumName;
+    public static String albumName;
     EditText mEditText;
     EditText newAlbumName;
 
+    private SharedViewModel sharedViewModel;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        listView = (ListView) view.findViewById(R.id.listView);
+        button = view.findViewById(R.id.addPhotoButton);
+        button_rename = view.findViewById(R.id.button_rename);
+        mEditText = view.findViewById(R.id.editTextText);
+        newAlbumName = view.findViewById(R.id.editTextText2);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View root) {
+                addItem(view);
+            }
+        });
+
+
+        button_rename.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick (View root) {
+
+                setButton_rename(view);
+            }
+        });
+
+        items = load(view);
+        itemsAdapter =  new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, items);
+
+        listView.setAdapter(itemsAdapter);
+
+        setUpListViewListener();
+        return view;
+    }
 
     private void setUpListViewListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Context context = getContext();
+                albumName = items.get(position);
+                sharedViewModel.setSelectedAlbumName(albumName);
+
+                NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.action_nav_home_to_nav_photos);
+            }
+        });
+
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -211,7 +261,7 @@ public class HomeFragment extends Fragment{
             }
             defaulthome.setHome(albumsarraylist);
 
-            Toast.makeText(view.getContext(), "Rename successfully!", Toast.LENGTH_LONG).show();
+            Toast.makeText(view.getContext(), "Rename successful", Toast.LENGTH_LONG).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -244,50 +294,6 @@ public class HomeFragment extends Fragment{
             Toast.makeText(getActivity(), "Name entry cannot be empty", Toast.LENGTH_LONG).show();
         }
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        listView = (ListView) view.findViewById(R.id.listView);
-        button = view.findViewById(R.id.button);
-        button_rename = view.findViewById(R.id.button_rename);
-        mEditText = view.findViewById(R.id.editTextText);
-        newAlbumName = view.findViewById(R.id.editTextText2);
-        temp_toPhotosButton = view.findViewById(R.id.toPhotosButton);
-
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View viewone) {
-                addItem(view);
-            }
-        });
-
-
-        button_rename.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View viewone) {
-
-                setButton_rename(view);
-            }
-        });
-
-        temp_toPhotosButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View viewone) {
-                NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.action_nav_home_to_nav_photos);
-            }
-        });
-
-        items = load(view);
-        itemsAdapter =  new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, items);
-
-        listView.setAdapter(itemsAdapter);
-
-        setUpListViewListener();
-        return view;
     }
 
     public void save(View view) {
@@ -397,4 +403,5 @@ public class HomeFragment extends Fragment{
 
         return tempitems;
     }
+
 }
