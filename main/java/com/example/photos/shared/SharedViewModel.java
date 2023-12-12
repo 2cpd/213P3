@@ -5,6 +5,7 @@ import android.util.Pair;
 import android.content.Context;
 import androidx.lifecycle.ViewModel;
 import com.example.photos.model.Photo;
+import com.example.photos.ui.home.HomeFragment;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -47,15 +48,126 @@ public class SharedViewModel extends ViewModel {
      */
 
     private String selectedAlbumName;
+    String FILE_NAME = "allPhotos.txt";
+    int positioncount=0;
 
-    private ArrayList<Pair<String,String>> allTagsList = new ArrayList<>(); //stores all tags, for autocomplete
-    private ArrayList<Photo> allPhotosList = new ArrayList<>();
-    private ArrayList<String> allAlbumsList = new ArrayList<>();
-    private ArrayList<Photo> searchResults = new ArrayList<>();
+    private ArrayList<Pair<String,String>> allTagsList = new ArrayList<Pair<String,String>>(); //stores all tags, for autocomplete
+    private ArrayList<Photo> allPhotosList = new ArrayList<Photo>();
+    private ArrayList<String> allAlbumsList = new ArrayList<String>();
+    private ArrayList<Photo> searchResults = new ArrayList<Photo>();
+    private ArrayList<Photo> photosInAlbum = new ArrayList<Photo>(); //temporary arraylist for data passing bet. photos and slideshow
+    private String currPhotoURI;
 
     // Methods to load data from text files
     public void loadAllPhotosListFromFile() {
         // TODO:Load data from text file and populate the ArrayList
+        FileInputStream fis = null;
+        //FileOutputStream fos = null;
+        //ArrayList<Photo> tempitems = new ArrayList<>();
+        ArrayList<String> uriarraylist = new ArrayList<>();
+        ArrayList<Character> charArrayList = new ArrayList<Character>();
+        ArrayList<String> namearraylist = new ArrayList<>();
+
+        try {
+            HomeFragment tempHomeFrag = new HomeFragment();
+            fis = tempHomeFrag.getContext().openFileInput(FILE_NAME);
+            int ch;
+            //boolean firstcomma = false;
+            int commacount = 0;
+            boolean coloncheck = false;
+
+            while ((ch = fis.read()) != -1) {
+
+
+                if (ch == '{') {
+                    positioncount = 0;
+                    continue;
+                }
+
+                if (positioncount == 0) {
+                    if (ch == ':') coloncheck = true;
+                    if (ch == ',') {
+                        StringBuilder builder = new StringBuilder(charArrayList.size());
+                        for(Character c: charArrayList) {
+                            builder.append(c);
+                        }
+                        uriarraylist.add(builder.toString());
+                        charArrayList.clear();
+
+                        positioncount = 1;
+                        coloncheck = false;
+                    } else {
+                        if (coloncheck) {
+                            charArrayList.add((char)ch);
+                        }
+                    }
+                } else if (positioncount == 1) {
+                    if (ch == ',') {
+                        positioncount = 2;
+                    }
+                } else if (positioncount == 2) {
+                    if (ch == ',') {
+                        if (commacount == 0) {
+                            commacount = 1;
+                            continue;
+                        } else {
+                            positioncount = 3;
+                            commacount = 0;
+                        }
+                    }
+                } else if (positioncount == 3){
+                    if (ch == ':') coloncheck = true;
+                    if (ch == ',') {
+                        StringBuilder builder = new StringBuilder(charArrayList.size());
+                        for(Character c: charArrayList) {
+                            builder.append(c);
+                        }
+                        namearraylist.add(builder.toString());
+                        charArrayList.clear();
+
+                        positioncount = 1;
+                        coloncheck = false;
+                    } else {
+                        if (coloncheck) {
+                            charArrayList.add((char)ch);
+                        }
+                    }
+
+                }
+                if (ch =='}') {
+                    StringBuilder builder = new StringBuilder(charArrayList.size());
+                    for(Character c: charArrayList) {
+                        builder.append(c);
+                    }
+                    if (!builder.toString().equals(""))
+                        namearraylist.add(builder.toString());
+
+                    charArrayList.clear();
+
+                }
+            }
+
+            fis.close();
+
+            //*****use for loop here to finish the rest*************//
+            for (int i = 0; i < uriarraylist.size(); i++) {
+                Photo temp = new Photo(uriarraylist.get(i), namearraylist.get(i));
+                allPhotosList.add(temp);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //return tempitems;
     }
     public void saveAllPhotosListToFile() {
         // TODO:Save data from arraylist to text file
@@ -79,6 +191,10 @@ public class SharedViewModel extends ViewModel {
         return allTagsList;
     }
 
+    public void setAllTagsList(ArrayList<Pair<String, String>> newList) {
+        allTagsList = newList;
+    }
+
     public boolean addTagToAllTagsList(String tagName, String tagType) {
         for (Pair<String,String> i:allTagsList) {
             if (i.first.equals(tagName) && i.second.equals(tagType)) {
@@ -94,6 +210,10 @@ public class SharedViewModel extends ViewModel {
         return allPhotosList;
     }
 
+    public void setAllPhotosList(ArrayList<Photo> newList) {
+        allPhotosList = newList;
+    }
+
     public boolean addPhotoToAllPhotosList(String newURI, String newAlbumName) {
         for (Photo i:allPhotosList) {
             if (i.getURI().equals(newURI) && i.getNameOfContainingAlbum().equals(newAlbumName)) { //duplicate photo exists
@@ -107,20 +227,8 @@ public class SharedViewModel extends ViewModel {
     }
 
     //Made redundant
-    /*public ArrayList<String> getAllAlbumsList() {
-        return allAlbumsList;
-    }
-
-    public boolean addAlbumToAllAlbumsList(String newAlbumName) {
-        for (String i:allAlbumsList) {
-            if (i.equals(newAlbumName)) { //duplicate album exists
-                return false;
-            }
-        }
-        //album does not exist, add album to list
-        allAlbumsList.add(newAlbumName);
-        return true;
-    }*/
+    /*public ArrayList<String> getAllAlbumsList() {}
+    public boolean addAlbumToAllAlbumsList(String newAlbumName) {}*/
 
     public void setSearchResults(ArrayList<Photo> photos) {
         this.searchResults = photos;
@@ -129,4 +237,21 @@ public class SharedViewModel extends ViewModel {
     public ArrayList<Photo> getSearchResults() {
         return searchResults;
     }
+
+    public void setPhotosInAlbum(ArrayList<Photo> photos) {
+        this.photosInAlbum = photos;
+    }
+
+    public ArrayList<Photo> getPhotosInAlbum() {
+        return photosInAlbum;
+    }
+
+    public void setCurrPhotoURI(String name) {
+        currPhotoURI = name;
+    }
+    public String getCurrPhotoURI() {
+        return currPhotoURI;
+    }
+
+
 }
