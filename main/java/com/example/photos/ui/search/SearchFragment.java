@@ -57,7 +57,10 @@ public class SearchFragment extends Fragment {
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-
+        tagsArr = new String[sharedViewModel.getAllTagsList().size()];
+        for (int i = 0; i < sharedViewModel.getAllTagsList().size(); i++) {
+            tagsArr[i] = sharedViewModel.getAllTagsList().get(i).first;
+        }
 
         //SPINNER SETUP
         Spinner typeSpinner1 = (Spinner) root.findViewById(R.id.typeSpinner1);
@@ -86,7 +89,7 @@ public class SearchFragment extends Fragment {
         //TEXT INPUT SETUP
         AutoCompleteTextView tag1input = (AutoCompleteTextView) root.findViewById(R.id.tagInputEntry1);
         AutoCompleteTextView tag2input = (AutoCompleteTextView) root.findViewById(R.id.tagInputEntry2);
-        ArrayAdapter<String> autoInputAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, autoCompleteTestArr);
+        ArrayAdapter<String> autoInputAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, tagsArr);
         tag1input.setAdapter(autoInputAdapter); tag2input.setAdapter(autoInputAdapter);
 
         //SEARCH BUTTON SETUP
@@ -184,11 +187,13 @@ public class SearchFragment extends Fragment {
                         }
                     }
                 }
-                if (conjunction.equals("And") && (tag1match && tag2match)) {
-                    searchArrayList.add(i);
-                }
-                else if (conjunction.equals("Or") && (tag1match || tag2match)) { //"Or"
-                    searchArrayList.add(i);
+                if (tag1match || tag2match) {
+                    if (conjunction.equals("Or")) {
+                        searchArrayList.add(i);
+                    }
+                    else if (tag1match && tag2match) { //And
+                        searchArrayList.add(i);
+                    }
                 }
             }
         }
